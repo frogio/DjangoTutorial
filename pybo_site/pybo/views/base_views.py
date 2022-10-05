@@ -50,24 +50,24 @@ def index(request):
 	# context 딕셔너리는 템플릿으로 넘어가 키 값으로 데이터를 참조할 수 있다.
 	
 def detail(request, question_id):
-	#question = Question.objects.get(id=question_id)
 	question = get_object_or_404(Question, pk=question_id)
 	# 요청한 question 객체를 가져온다
 	
-	#recommend_list = []
-	#
-	#idx = 0
-	## 유저가 추천을 체크한 답변의 인덱스를 확인한다.
-	#for answer in question.answer_set.all():							# 질문에 달린 모든 답변에 대하여
-	#	if(answer.voter.filter(pk=request.user.id).exists()):			# 한 질문에 대한 답변에 요청자의 추천이 기록되어 있을 경우
-	#		recommend_list.append(idx)									# 답변의 idx를 리스트변수에 추가한다.
-	#	idx += 1
-	#	
-	#context = {'question' : question,
-	#			'answer_is_liked' : recommend_list}
+	recommend_list = []
+	
+	idx = 0
+	# 유저가 추천을 체크한 답변의 인덱스를 확인한다.
+	for answer in question.answer_set.all():							# 로그인된 유저의 답변 추천 체크 목록을 만들어낸다.
+		if(answer.voter.filter(pk=request.user.id).exists()):			
+			recommend_list.append(idx)									# 답변의 순서는 0부터 시작하고, 체크가 되어있을 경우 해당 답변의 인덱스를 추가한다.
+		idx += 1
 
-	context = {'question' : question}
-
+	answer_idx_str = '//'.join([str(i) for i in recommend_list])		# 리스트를 자바스크립트에서 받을 수 있게 // 토큰으로 리스트 값들을 연결해
+																		# 하나의 문자열로 만든다. 후에 자바스크립트에서 //토큰을 기준으로 split하여
+																		# 추천 체크 배열을 만든다.
+		
+	context = {'question' : question,
+				'answer_is_liked' : answer_idx_str}						# template에 context 객체를 보낸다. answer_is_liked은 리스트를 문자열로 변환한 변수이다.
 
 	if(request.user.is_authenticated == True and question.voter.filter(pk=request.user.id).exists()):			# 질문에 요청한 유저의 추천이 체크되어 있을 경우
 			context['question_is_liked'] = True
