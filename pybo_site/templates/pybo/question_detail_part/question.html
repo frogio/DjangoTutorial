@@ -1,0 +1,66 @@
+{% load pybo_filter%}
+
+<h2 class="border-bottom py-2">{{ question.subject}} </h2>		
+		
+		<div class="row my-3">
+		
+			<div class="col-1 my-3"> <!-- 추천 영역 -->
+				<div class="bg-light text-center p-3 border font-weight-border mb-1">
+					{{ question.voter.count }}
+				</div> 
+					
+					{% if question.author_id != request.user.id  %}			<!-- 자기가 쓴 글이 아닐때만 추천 버튼을 보인다. -->
+						
+						{% if question_is_liked %}									<!-- 좋아요 체크 표시 -->
+							<a href="#" data-uri="{% url 'pybo:vote_question' question.id %}" class="recommend btn btn-sm btn-secondary btn-block my-1 bg-danger">추천</a>
+						
+						{% else %}
+							<a href="#" data-uri="{% url 'pybo:vote_question' question.id %}" class="recommend btn btn-sm btn-secondary btn-block my-1">추천</a>
+						
+						{% endif %}
+					{% endif %}
+				</div>
+			
+			<div class="col-11"> <!-- Question 영역 -->
+		
+				<div class="card my-3">
+					
+					<div class="card-body">
+						<div class="card-text py-4">
+							{% autoescape off %}
+								{{question.content|mark}}
+							{% endautoescape %}
+							<div class="d-flex justify-content-end">
+							
+								{% if question.modify_date %}
+								<div class = 'badge badge-light p-2 text-left mx-3'>
+									<div class="mb-2">modified at</div>
+									<div>{{ question.modify_date }}</div>
+								</div>
+								{% endif %}
+								
+								<div class="badge badge-secondary p-2 text-left">
+									<div class='mb-2'>{{ question.author.username }}</div>
+									<div>{{question.create_date}}</div>
+								</div>
+							</div>
+						</div>
+					
+					{% if request.user == question.author %}
+					<div class="my-3">
+						<a href="{% url 'pybo:question_modify' question.id %}" 
+						class="btn btn-sm btn-outline-secondary">
+						<i class="far fa-edit"></i>수정</a>
+						<a href="#" class="delete btn btn-sm btn-outline-danger" data-uri="{% url 'pybo:question_delete' question.id %}">
+						<i class="fas fa-trash-alt"></i>삭제</a>
+					</div>
+					{% endif %}
+		
+					{% include 'pybo/question_comment.html' %}
+		
+					</div>
+				</div>		
+			
+			</div>
+			
+		</div>

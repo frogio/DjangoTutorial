@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block summernote%}
+	<link rel="stylesheet" href="{% static 'summernote-bs4.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container my-3">
+	<form method="post" class="post-form">
+		{% csrf_token %}
+		{% include 'form_errors.html' %}
+
+		<div class="form-group">
+		
+			<label for="content">답변 내용</label>
+			
+			<textarea class = "form-control" name = 'content' id = 'content' rows = "10">{{form.content.value|default_if_none:'' }}</textarea>
+			
+			<button type="submit" class="btn btn-primary my-4">저장하기</button>
+			
+		</div>
+	</form>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+	<script src="{% static 'summernote-bs4.js' %}"></script>
+	<script src="{% static 'summernote-ko-KR.js' %}"></script>
+	<script>
+	
+		$(function(){
+			$('textarea').summernote({
+				height:300
+			})
+		
+		});
+	
+	</script>
+
+{% endblock %}

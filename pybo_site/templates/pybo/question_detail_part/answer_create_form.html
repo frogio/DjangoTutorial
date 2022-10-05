@@ -1,0 +1,17 @@
+<form action="{% url 'pybo:answer_create' question.id %}" method="post" class="my-3">
+	
+	{% include 'form_errors.html' %}
+	{% csrf_token %}
+	
+	<div class = "form-group">
+		<p class="border-bottom">내 답변 : </p>
+		<textarea name='content' id='content' rows='10' cols="100" class="form-control"
+		{% if not user.is_authenticated %}
+		disabled
+		{% endif %}
+	></textarea>
+	</div>
+	
+	<input type='submit' value='답변 등록' class="btn btn-primary">			
+</form>
+		
